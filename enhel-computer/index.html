@@ -54,10 +54,10 @@
     .loading-scene__bar {
       border: 2px solid white;
       width: 50%;
+      padding: 0.25em;
     }
 
     .bar__element {
-      margin: 0.25em;
       width: 0%;
       height: 2em;
       background-color: white;
@@ -129,8 +129,7 @@
         if (m) {
           barElement.style.width = Math.ceil(m[2] / m[4] * 100) + "%";
           descriptionPercentage.innerText = (Math.ceil(m[2] / m[4] * 10000) / 100).toFixed(2) + "%"
-          descriptionExplained.innerText = "Downloaded: " + (Math.ceil(m[2] / (1024 * 1024) * 100) / 100).toFixed(2) + " Mbytes from " + Math.ceil(m[4] / (1024 * 1024) * 100) / 100;
-
+          descriptionExplained.innerText = "Downloaded: " + (Math.ceil(m[2] / (1024 * 1024) * 100) / 100).toFixed(2) + " Mbytes from " + Math.ceil(m[4] / (1024 * 1024) * 100) / 100 + " Mbytes";
           text = m[1];
         }
       },
