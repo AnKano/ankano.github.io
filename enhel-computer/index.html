@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en-us">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet">
+
+  <title>Enhel Computer</title>
+  <style>
+    body {
+      font-family: "Golos Text", serif;
+      margin: 0;
+      padding: none;
+      color: white;
+    }
+
+    canvas.game-scene__canvas {
+      border: 0px none;
+      background-color: black;
+    }
+
+    .game-scene__canvas {
+      padding-right: 0;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    .loading-scene {
+      display: block;
+      background-color: rgb(177, 220, 213);
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .loading-scene__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      gap: 1em;
+
+      width: 100vw;
+      height: 100vh;
+    }
+
+    .loading-scene__bar {
+      border: 2px solid white;
+      width: 50%;
+    }
+
+    .bar__element {
+      margin: 0.25em;
+      width: 0%;
+      height: 2em;
+      background-color: white;
+    }
+
+    .loading-scene__description {
+      align-items: center;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .game-scene {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading-scene" id="loading-scene">
+    <div class="loading-scene__container">
+      <div class="loading-scene__bar">
+        <div class="bar__element" id="bar-element"></div>
+      </div>
+      <div class="loading-scene__description">
+        <div class="description__percentage" id="description-percentage"></div>
+        <div class="description__explained" id="description-explained"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="game-scene" id="game-scene">
+    <canvas class="game-scene__canvas" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+  </div>
+
+  <script type='text/javascript'>
+    var gameScene = document.getElementById('game-scene');
+    var loadingScene = document.getElementById('loading-scene');
+
+    var barElement = document.getElementById('bar-element')
+    var descriptionPercentage = document.getElementById('description-percentage')
+    var descriptionExplained = document.getElementById('description-explained')
+
+    var Module = {
+      print: (function () { })(),
+      onRuntimeInitialized: function () {
+        gameScene.style.display = 'block';
+        loadingScene.style.display = 'none';
+      },
+      postRun: function () {
+        window.addEventListener("resize", function () {
+          const canvas = document.getElementById("canvas");
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          Module._raylibSetWindowSize(window.innerWidth, window.innerHeight)
+        });
+        window.dispatchEvent(new Event('resize'));
+      },
+      canvas: (() => {
+        var canvas = document.getElementById('canvas');
+        canvas.addEventListener("webglcontextlost", (e) => { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+        return canvas;
+      })(),
+      setStatus: (text) => {
+        Module.setStatus.last ??= { time: Date.now(), text: '' };
+        if (text === Module.setStatus.last.text) return;
+        var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+
+        if (m) {
+          barElement.style.width = Math.ceil(m[2] / m[4] * 100) + "%";
+          descriptionPercentage.innerText = (Math.ceil(m[2] / m[4] * 10000) / 100).toFixed(2) + "%"
+          descriptionExplained.innerText = "Downloaded: " + (Math.ceil(m[2] / (1024 * 1024) * 100) / 100).toFixed(2) + " Mbytes from " + Math.ceil(m[4] / (1024 * 1024) * 100) / 100;
+
+          text = m[1];
+        }
+      },
+      totalDependencies: 0,
+      monitorRunDependencies: (left) => {
+        this.totalDependencies = Math.max(this.totalDependencies, left);
+        Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies - left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+      }
+    };
+
+    window.onerror = (event) => {
+      Module.setStatus('Exception thrown, see JavaScript console');
+      Module.setStatus = (text) => {
+        if (text) console.error('[post-exception status] ' + text);
+      };
+    };
+  </script>
+  <script async type="text/javascript" src="enhel-computer.js"></script>
+</body>
+
+</html>
