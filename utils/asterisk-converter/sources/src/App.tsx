@@ -158,8 +158,8 @@ async function startApplication(mountPoint: HTMLDivElement) {
     };
   });
 
-  circles.forEach(function (bunny) {
-    app.stage.addChild(bunny.graphics);
+  circles.forEach(function (circle) {
+    app.stage.addChild(circle.graphics);
   });
 
   // Listen for animate update
