@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'UbuntuMono-Regular';
-  src: url('/fonts/UbuntuMono-Regular.ttf');
+  src: url('./fonts/UbuntuMono-Regular.ttf');
 }
 
 body {
