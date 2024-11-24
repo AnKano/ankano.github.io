@@ -36,4 +36,4 @@ var Module = {
     }
 };
 
-importScripts('mini-rv32ima.js');
+importScripts('./mini-rv32ima.js');
